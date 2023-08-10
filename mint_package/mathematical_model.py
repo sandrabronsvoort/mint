@@ -3,8 +3,6 @@ import pandas as pd
 
 def solve_model(supply_chain_data):
 
-    print("STARTING OPTIMIZATION\n\n")
-
     # Get data
     data = supply_chain_data.get_data()
     suppliers = data['suppliers']
@@ -23,7 +21,7 @@ def solve_model(supply_chain_data):
     production_emissions = data['production_emissions']
 
     # Define the problem
-    problem = pulp.LpProblem("Emissions minimization", pulp.LpMinimize)
+    problem = pulp.LpProblem("Emissions_minimization", pulp.LpMinimize)
 
     # Define decision variables
     production = pulp.LpVariable.dicts("Production", (factories, products),
@@ -71,9 +69,9 @@ def solve_model(supply_chain_data):
             problem += transport_sum >= demand
 
     # Solve the problem
-    problem.solve()
+    problem.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    print("OPTIMIZATION RESULTS:")
+    print("OPTIMIZATION RESULTS:\n")
 
     # Calculate and print total costs per product
     print(f"- Total emissions:", round(pulp.value(problem.objective)), "tonnes")
@@ -112,4 +110,5 @@ def solve_model(supply_chain_data):
             production_value = production[factory][product].varValue
             print(f"    - Production quantity for product {product} at factory {factory}: {round(production_value)} units")
 
-    return ""
+    success_message = "\n\n-------------------------\n[     RUN SUCCESSFUL     ]\n-------------------------\n\n"
+    return success_message
