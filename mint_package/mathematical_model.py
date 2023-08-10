@@ -3,8 +3,11 @@ import pandas as pd
 
 def solve_model(supply_chain_data):
 
+    print("STARTING OPTIMIZATION\n\n")
+
     # Get data
     data = supply_chain_data.get_data()
+    suppliers = data['suppliers']
     factories = data['factories']
     products = data['products']
     customers = data['customers']
@@ -70,8 +73,10 @@ def solve_model(supply_chain_data):
     # Solve the problem
     problem.solve()
 
+    print("OPTIMIZATION RESULTS:")
+
     # Calculate and print total costs per product
-    print("Total emissions:", pulp.value(problem.objective))
+    print(f"- Total emissions:", round(pulp.value(problem.objective)), "tonnes")
 
     total_costs_per_product = {}
 
@@ -97,12 +102,14 @@ def solve_model(supply_chain_data):
 
     # Print total costs per product
     for product, cost in total_costs_per_product.items():
-        print(f"Total cost for Product {product}: {cost}")
+        print(f"- Total cost for Product {product}: {round(cost)} USD")
 
     # Print production quantities for each factory and product combination
+    print("- Production quantities:")
+    
     for factory in factories:
         for product in products:
             production_value = production[factory][product].varValue
-            print(f"Factory: {factory}, Product: {product}, Production Quantity: {production_value}")
+            print(f"    - Production quantity for product {product} at factory {factory}: {round(production_value)} units")
 
     return ""

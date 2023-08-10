@@ -1,9 +1,10 @@
 import pandas as pd
 
 class DataContainer:
-    def __init__(self, factories, products, customers, transport_modes, product_weight, demand_dict,
+    def __init__(self, suppliers, factories, products, customers, transport_modes, product_weight, demand_dict,
                  transport_costs, transport_emissions, distances_table, transport_lane_modes,
                  production_capacity, production_costs, production_emissions):
+        self.suppliers = suppliers
         self.factories = factories
         self.products = products
         self.customers = customers
@@ -20,6 +21,7 @@ class DataContainer:
 
     def get_data(self):
         return {
+            'suppliers': self.suppliers,
             'factories': self.factories,
             'products': self.products,
             'customers': self.customers,
@@ -41,6 +43,7 @@ def read_data(file_path):
     data = pd.read_excel(file_path, sheet_name=None)
 
     # Define sets
+    suppliers = set(data['Suppliers']['Supplier'].tolist())
     factories = set(data['Factories']['Factory'].tolist())
     products = set(data['Products']['Product'].tolist())
     customers = set(data['Customers']['Customer'].tolist())
@@ -92,5 +95,14 @@ def read_data(file_path):
     production_emissions = {(factory, product): emissions for factory, product, emissions in zip(
         production_data['Factory'], production_data['Product'], production_data['CO2 emissions (kg/unit)'])}
 
+    # Print data summary
+    print("SUPPLY CHAIN SUMMARY:\n")
+    print(f"- {len(suppliers)} suppliers")
+    print(f"- {len(factories)} factories")
+    print(f"- {len(products)} products")
+    print(f"- {len(customers)} customers")
+    print(f"- {len(transport_modes)} transport modes")
+    print("\n\n")
+
     # Return data
-    return DataContainer(factories, products, customers, transport_modes, product_weight, demand_dict, transport_costs, transport_emissions, distance_table, transport_lane_modes, production_capacity, production_costs, production_emissions)
+    return DataContainer(suppliers, factories, products, customers, transport_modes, product_weight, demand_dict, transport_costs, transport_emissions, distance_table, transport_lane_modes, production_capacity, production_costs, production_emissions)
