@@ -4,7 +4,7 @@ import pandas as pd
 # READ IN DATA
 
 # File path for Excel data
-FILE_PATH = ""
+FILE_PATH = 'C:/mint/mint2/MINT_Excel_Template.xlsx'
 
 # Read Excel data
 data = pd.read_excel(FILE_PATH, sheet_name=None)
